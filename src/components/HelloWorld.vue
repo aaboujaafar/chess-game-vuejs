@@ -1,144 +1,78 @@
 <template>
-  <v-container>
-    <v-layout
-      text-center
-      wrap
-    >
-      <v-flex xs12>
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        ></v-img>
-      </v-flex>
-
-      <v-flex mb-4>
-        <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Vuetify
-        </h1>
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a href="https://community.vuetifyjs.com" target="_blank">Discord Community</a>
-        </p>
-      </v-flex>
-
-      <v-flex
-        mb-5
-        xs12
-      >
-        <h2 class="headline font-weight-bold mb-3">What's next?</h2>
-
-        <v-layout justify-center>
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-layout>
-      </v-flex>
-
-      <v-flex
-        xs12
-        mb-5
-      >
-        <h2 class="headline font-weight-bold mb-3">Important Links</h2>
-
-        <v-layout justify-center>
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-layout>
-      </v-flex>
-
-      <v-flex
-        xs12
-        mb-5
-      >
-        <h2 class="headline font-weight-bold mb-3">Ecosystem</h2>
-
-        <v-layout justify-center>
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-container>
+<div>
+  <table>
+    <tbody :key="refresh">
+        <tr v-for=" (row, index) in board" :key="index">
+            <td v-for=" (elmt, index1) in row" :key="index1" @click="getAllPossiblePositions(index, index1)"><v-icon>{{elmt}}</v-icon></td>
+        </tr>
+    </tbody>
+  </table>
+</div>
 </template>
 
 <script>
+import Piece from "@/assets/js/Piece"
+
+import {bishopPossibleMoves, rookPossibleMoves, pawnPossibleMoves, knightPossibleMoves} from "@/assets/js/PossibleMoves"
+
 export default {
   name: 'HelloWorld',
-
-  data: () => ({
-    ecosystem: [
-      {
-        text: 'vuetify-loader',
-        href: 'https://github.com/vuetifyjs/vuetify-loader',
+  data() {
+    return{
+      possibleMoves : null,
+      board : Array(8),
+      piece : new Piece("Bishop 1", {x : 3, y : 3}, 1, "Black", knightPossibleMoves, "mdi-chess-knight"),
+      refresh : false
+    }
+  },
+  created(){
+    this.refreshBoard()
+    /* this.board[3][3] = "B1i"
+    var bishop = new Piece("Bishop 1", {x : 3, y : 3}, 1, "Black", bishopPossibleMoves);
+    this.possibleMoves = bishop.getPossiblePositions()
+    this.possibleMoves.forEach(position => {
+        this.board[position.x][position.y] = "B1"
+    });
+    this.board[0][0] = "Ri"
+    var rook = new Piece("Rook 1", {x : 0, y : 0}, 1, "Black", rookPossibleMoves);
+    this.possibleMoves = rook.getPossiblePositions()
+    this.possibleMoves.forEach(position => {
+        this.board[position.x][position.y] = "R"
+    }); */
+  },
+  methods:{
+      getAllPossiblePositions(x,y){
+        this.refreshBoard()
+        this.board[x][y] = this.piece.icon
+        this.piece.position = { x , y }
+        this.possibleMoves = this.piece.getPossiblePositions()
+        this.possibleMoves.forEach(position => {
+            this.board[position.x][position.y] = "B1"
+        });
+        this.refresh = !this.refresh
       },
-      {
-        text: 'github',
-        href: 'https://github.com/vuetifyjs/vuetify',
-      },
-      {
-        text: 'awesome-vuetify',
-        href: 'https://github.com/vuetifyjs/awesome-vuetify',
-      },
-    ],
-    importantLinks: [
-      {
-        text: 'Documentation',
-        href: 'https://vuetifyjs.com',
-      },
-      {
-        text: 'Chat',
-        href: 'https://community.vuetifyjs.com',
-      },
-      {
-        text: 'Made with Vuetify',
-        href: 'https://madewithvuejs.com/vuetify',
-      },
-      {
-        text: 'Twitter',
-        href: 'https://twitter.com/vuetifyjs',
-      },
-      {
-        text: 'Articles',
-        href: 'https://medium.com/vuetify',
-      },
-    ],
-    whatsNext: [
-      {
-        text: 'Explore components',
-        href: 'https://vuetifyjs.com/components/api-explorer',
-      },
-      {
-        text: 'Select a layout',
-        href: 'https://vuetifyjs.com/layout/pre-defined',
-      },
-      {
-        text: 'Frequently Asked Questions',
-        href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-      },
-    ],
-  }),
+      refreshBoard(){
+        for(var i=0; i < this.board.length; i++){
+            this.board[i] = Array(8).fill("-")
+        }   
+      }
+  },
+  watch:{
+      board:{
+          handler(){
+              console.info('tag', this.board)
+          },
+          deep: true
+          
+      }
+  }
 };
 </script>
+<style>
+    td{
+        width: 48px;
+        height: 48px;
+        border: 1px solid;
+        text-align: center;
+    }
+</style>

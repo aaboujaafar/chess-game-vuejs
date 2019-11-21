@@ -7,7 +7,10 @@ module.exports = {
       "enableInSFC": false
     }
   },
+
   "transpileDependencies": [
     "vuetify"
-  ]
+  ],
+
+  lintOnSave: false
 }
