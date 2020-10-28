@@ -1,19 +1,18 @@
 # chess-game
 
-## Project setup
+## TO-DO
+
+- Fix the constraint to show only real possible moves, should implement a method in the Piece class that get a position in parameter and test if it valids the constraint and add an array field that contains the impossible vectors
+- Add constraint to eat the opponent when it's possible 
+
+## Done
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+
+
 
 ### Run your tests
 ```
